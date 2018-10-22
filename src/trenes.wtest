@@ -1,0 +1,61 @@
+import trenes.*
+ 
+describe "test formaciones" {
+	var vagon1 = new VagonDeCarga(kilos = 1000)
+	var vagon2 = new VagonDeCarga(kilos = 1500)
+	var vagon3 = new VagonDeCarga(kilos =3000)
+	var vagonA = new VagonDePasajeros(largo = 2.5,anchoUtil = 3, banios= 5 )
+	var vagonB = new VagonDePasajeros (largo = 2.5, anchoUtil = 4, banios=10)
+	var vagonC = new VagonDePasajeros(largo=100,anchoUtil=2, banios=6)
+	var locomotoraUnqui= new Locomotoras(peso=10000,velocidadMaxima=40,pesoMaximoDeArrastre=11000)
+	var locomotoraQuilmes = new Locomotoras(peso = 1000, velocidadMaxima = 80,pesoMaximoDeArrastre = 11000)
+	var locomotoraBernal = new Locomotoras (peso = 1500, velocidadMaxima = 85, pesoMaximoDeArrastre= 10500 )
+	var locomotoraEzpeleta = new Locomotoras(peso = 2000, velocidadMaxima = 70, pesoMaximoDeArrastre = 10000)
+	var form1 = new Formacion (locomotoras = [ locomotoraQuilmes,locomotoraBernal] , vagones=[vagon1,vagon2,vagon3,vagonA,vagonB])
+	var form2= new Formacion (locomotoras = [locomotoraQuilmes, locomotoraBernal,locomotoraEzpeleta],vagones=[vagon1,vagon2,vagonA])
+	var form3= new Formacion(locomotoras =[locomotoraQuilmes,locomotoraUnqui], vagones=[vagon1,vagon2,vagon3,vagonA,vagonC])
+	var form4= new Formacion(locomotoras=[locomotoraQuilmes,locomotoraEzpeleta],vagones=[vagon1,vagonA])
+	var form5=new Formacion(locomotoras=[locomotoraQuilmes],vagones=[vagon2,vagon3,vagon3,vagon3])
+	var locomotoraA= new Locomotoras(peso=1500,velocidadMaxima=90,pesoMaximoDeArrastre=14000)
+	var locomotoraB= new Locomotoras(peso=2000,velocidadMaxima=80,pesoMaximoDeArrastre=4000)
+	var dep1 = new Depositos(formaciones= [form1,form2,form3], locomotorasSueltas=[locomotoraA,locomotoraB])
+	var dep2 = new Depositos(formaciones=[form4],locomotorasSueltas=[locomotoraA])
+	var dep3= new Depositos(formaciones=[form5,form4],locomotorasSueltas=[locomotoraB,locomotoraA])
+	test "vagones livianos 4"{
+		assert.equals(4,form1.cantidadDeVagonesLivianos())
+	}
+	test "locomotora menos veloz Ezpeleta de la formacion form2"{
+		assert.equals(locomotoraEzpeleta,form2.locomotoraMenosVeloz())
+	}
+	test"la formacion form2 no es eficiente"{
+		assert.equals(false,form2.esEficiente())
+	}	
+	test"la formacion form1 es eficiente"{
+		assert.equals(true,form1.esEficiente())
+	}
+	test"la formacion form1 puede moverse"{
+		assert.equals(true,form1.puedeMoverse())
+	}
+	test"la formacion form3 no puede moverse"{
+		assert.equals(false,form3.puedeMoverse())
+	}
+	test" le faltan 0 kilos a la formacion form1"{
+		assert.equals(0,form1.kilosFaltantesDeEmpuje())
+	}
+	test"le faltan 60980 kilos a la formacion form3"{
+		assert.equals(60980,form3.kilosFaltantesDeEmpuje())
+	}
+	test"vagones mas pesados de dep1"{
+		assert.equals(#{vagon3,vagonA,vagonC},dep1.vagonesPesados())
+	}
+	test "el deposito dep1 necesita conductor experimentado "{
+		assert.equals(true,dep1.necesitaConductorExperimentado())
+	}
+	test"el deposito dep2 no necesita conductor experimentado"{
+		assert.equals(false,dep2.necesitaConductorExperimentado())
+	}
+	test "agrego locomotora a la formacion form3"{
+		dep3.agregarLocomotoraAFormacion(form5)
+		assert.equals([locomotoraQuilmes,locomotoraB],form5.locomotoras())
+	}
+}
